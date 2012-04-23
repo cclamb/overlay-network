@@ -1,6 +1,6 @@
 require 'rspec'
 
-require_relative '../../lib/carp/search/file_search_manager'
+require_relative '../../lib/carp/file_search_manager'
 
 NON_EXISTENT_ROOT = 'non-extant'
 

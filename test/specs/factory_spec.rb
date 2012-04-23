@@ -1,4 +1,4 @@
-require_relative '../../lib/carp/core/factory'
+require_relative '../../lib/carp/factory'
 
 describe Carp::Core::Factory do
   

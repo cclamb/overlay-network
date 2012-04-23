@@ -1,7 +1,7 @@
 require 'rspec'
 require 'rack/test'
 
-require_relative '../../lib/carp/core/node'
+require_relative '../../lib/carp/node'
 
 def get_content path
   get path

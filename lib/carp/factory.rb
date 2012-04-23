@@ -1,4 +1,4 @@
-require_relative '../search/file_search_manager'
+require_relative 'file_search_manager'
 
 module Carp
 
@@ -6,7 +6,7 @@ module Carp
 
     class Factory
 
-      CONTENT_ROOT = "#{File.dirname __FILE__}/../../../etc/content"
+      CONTENT_ROOT = "#{File.dirname __FILE__}/../../etc/content"
 
       def create_component name, args = nil
         return create_search_manager args if name == :search_manager
