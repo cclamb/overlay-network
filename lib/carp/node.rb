@@ -2,7 +2,7 @@ require 'sinatra/base'
 require 'socket'
 
 require_relative 'factory'
-require_relative '../perch/util/test_interface'
+require_relative '../util/test_interface'
 
 module Carp
 

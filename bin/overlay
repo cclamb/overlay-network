@@ -2,10 +2,10 @@
 
 require 'optparse'
 
-require_relative '../lib/perch/core/core'
-require_relative '../lib/perch/util/util'
+require_relative '../lib/perch/core'
+require_relative '../lib/util/util'
 
-require_relative '../lib/carp/core/node'
+require_relative '../lib/carp/node'
 
 file_name = "#{File.dirname __FILE__}/.pids"
 

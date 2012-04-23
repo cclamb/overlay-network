@@ -2,7 +2,7 @@ require 'rspec'
 require 'rack/test'
 require 'socket'
 
-require_relative '../../lib/perch/util/test_interface'
+require_relative '../../lib/util/test_interface'
 
 Hostname = Socket::gethostname
 

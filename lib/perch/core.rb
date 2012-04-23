@@ -1,5 +1,5 @@
-require_relative '../../../lib/carp/core/node'
-require_relative '../../../lib/trout/router'
+require_relative '../carp/node'
+require_relative '../trout/router'
 
 module Core
 
