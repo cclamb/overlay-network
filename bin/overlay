@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+require_relative '../lib/perch/core/core'
+require_relative '../lib/perch/util/util'
+
+require_relative '../lib/carp/core/node'
+
+file_name = "#{File.dirname __FILE__}/.pids"
+
+pids =  Util::find_file file_name
+
+puts pids
+
+links = [[0,1]]
+nets = [1,1]
+
+options = Util::process_options
+
+options.each do |k,v|
+  if k == :start
+    if pids == nil
+      pids = Core::spawn links, nets
+      File.open(file_name,'w') do |file|
+        Marshal.dump pids, file
+      end
+    else
+      puts "Cannot restart, process alread started!\n"
+    end
+  end
+
+  if k == :stop
+    unless pids == nil
+      Core::clean pids
+      File.delete file_name
+    end
+  end
+end
+

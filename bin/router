@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/trout/router'
+
+Trout::Router.start :ctx_mgr => 'http://localhost:5678', \
+  :nodes => ['http://localhost:4567', 'http://localhost:4568'], \
+  :ctx => { :port => 6789 }
