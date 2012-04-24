@@ -14,11 +14,12 @@ module Core
     exit!
   end
 
-  def Core::process_router port, nodes, ctx_mgr_url
+  def Core::process_router port, nodes, ctx_mgr_url, router_urls
     puts "\t==>> router up on port #{port}...\n"
     puts nodes
     Trout::Router.start :nodes => nodes, \
       :ctx_mgr => ctx_mgr_url, \
+      :routers => router_urls, \
       :ctx => { :port => port, :logging => true }
     exit!
   end
@@ -35,6 +36,7 @@ module Core
 
     net_cnt = 0
 
+    original_router_ports = router_ports.clone
     nets.each do |number_of_nodes|
 
       # reserve for router
@@ -71,7 +73,9 @@ module Core
 
       pid = fork
       if pid == nil
-        process_router router_port, nodes, nil
+        other_routers = original_router_ports.clone
+        other_routers.delete router_port
+        process_router router_port, nodes, nil, other_routers
       else
         puts "In parent! child pid: #{pid}"
         Process.detach pid

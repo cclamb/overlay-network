@@ -12,6 +12,10 @@ module Carp
 
       enable :inline_templates
 
+      @@router = nil
+      @@ctx_mgr = nil
+      @@content_root = nil
+
       def initialize
         super
         @type = 'content node'
@@ -19,7 +23,8 @@ module Carp
 
       def get_content id
         factory = Carp::Core::Factory.new
-        sm = factory.create_component :search_manager, :content_root => @@content_root
+        sm = factory.create_component :search_manager, \
+          :content_root => @@content_root
 
         bundle = nil
         begin
@@ -59,7 +64,6 @@ module Carp
         @@router = params[:router]
         @@ctx_mgr = params[:ctx_mgr]
         @@content_root = params[:content_root]
-        puts "\t\t<< CONTENT_ROOT: #{@@content_root}"
         run!
       end
 

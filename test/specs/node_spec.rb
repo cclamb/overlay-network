@@ -30,8 +30,7 @@ describe Carp::Core::Node do
   it "should integrate the test interface" do
     get '/test'
     last_response.should be_ok
-    body = last_response.body
-    fail 'incorrect body' unless body =~ /Howdy/
+    fail 'incorrect body' unless last_response.body =~ /Howdy/
   end
 
   context 'when using the test interface' do

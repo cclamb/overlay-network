@@ -16,8 +16,9 @@ module Carp
       private
 
       def create_search_manager args
-        puts "\t\t<< ARGS : #{args} >>\n"
-        root = (args != nil && args[:content_root] != nil) ? args[:content_root] : CONTENT_ROOT
+        root = (args != nil && args[:content_root] != nil) \
+          ? args[:content_root] \
+          : CONTENT_ROOT
         Carp::Search::FileSearchManager.new root
       end
 

@@ -13,6 +13,10 @@ module Trout
 
     enable :inline_templates
 
+    @@context = nil
+    @@nodes = nil
+    @@routers = nil
+
     def initialize
       super
       @type = 'router'
