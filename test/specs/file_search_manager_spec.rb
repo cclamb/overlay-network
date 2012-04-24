@@ -3,6 +3,7 @@ require 'rspec'
 require_relative '../../lib/carp/file_search_manager'
 
 NON_EXISTENT_ROOT = 'non-extant'
+TEST_ROOT = 'etc/content-0'
 
 describe Carp::Search::FileSearchManager do
 
@@ -26,16 +27,16 @@ describe Carp::Search::FileSearchManager do
   context 'with a valid root, but no bundle' do
 
     it 'should be creatable' do
-      Carp::Search::FileSearchManager.new 'etc/content'
+      Carp::Search::FileSearchManager.new 'etc/content-0'
     end
 
     it 'should return false from exists?' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       fsm.exists?('non-extant').should eq false
     end
 
     it 'should return nil from find' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       fsm.find('non-extant').should eq nil
     end
 
@@ -44,12 +45,12 @@ describe Carp::Search::FileSearchManager do
   context 'with a valid root and a invalid bundle (no content)' do
 
     it 'should return true from exists?' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       fsm.exists?('bad-bundle').should eq true
     end
 
     it 'should throw an exception from find' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       is_failed = false
       begin
         fsm.find('bad-bundle').should eq nil
@@ -64,12 +65,12 @@ describe Carp::Search::FileSearchManager do
   context 'with a valid root and a invalid bundle (no license)' do
 
     it 'should return true from exists?' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       fsm.exists?('bogus-bundle').should eq true
     end
 
     it 'should throw an exception from find' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       is_failed = false
       begin
         fsm.find('bogus-bundle').should eq nil
@@ -84,7 +85,7 @@ describe Carp::Search::FileSearchManager do
   context 'with a valid root and a valid bundle' do
 
     it 'should return a licence and content' do
-      fsm = Carp::Search::FileSearchManager.new 'etc/content'
+      fsm = Carp::Search::FileSearchManager.new TEST_ROOT
       fsm.exists?('test').should eq true
       bundle = fsm.find 'test'
       bundle[:license].should_not eq nil

@@ -3,10 +3,13 @@ require_relative '../trout/router'
 
 module Core
 
-  def Core::process_child port, router_url, ctx_mgr_url
+  Content_Root_Base = "#{File.dirname __FILE__}/../../etc/content-"
+
+  def Core::process_child port, router_url, ctx_mgr_url, content_root
     puts "\t ==>> node up on port #{port}...\n"
     Carp::Core::Node.start :router => router_url, \
       :ctx_mgr => ctx_mgr_url, \
+      :content_root => content_root, \
       :ctx => { :port => port, :logging => true }
     exit!
   end
@@ -30,6 +33,8 @@ module Core
       port += 1
     end
 
+    net_cnt = 0
+
     nets.each do |number_of_nodes|
 
       # reserve for router
@@ -43,9 +48,14 @@ module Core
       node_ports = []
       number_of_nodes.times do |cnt|
         node_ports.push port
+
+        content_root = "#{Content_Root_Base}#{net_cnt}"
+        net_cnt += 1
+        puts "ROOT => #{content_root} : #{net_cnt}"
+
         pid = fork
         if pid == nil
-          process_child port, router_url, nil
+          process_child port, router_url, nil, content_root
         else
           puts "In parent! child pid: #{pid}"
           Process.detach pid

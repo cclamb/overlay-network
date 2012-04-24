@@ -39,7 +39,7 @@ module Trout
 
       responses = search_children params
 
-      if responses.empty?
+      if responses.empty? && @@routers != nil
         request = params[:request]
         # forward to any known routers
         @@routers.each do |router|
