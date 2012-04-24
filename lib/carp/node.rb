@@ -1,5 +1,7 @@
 require 'sinatra/base'
 require 'socket'
+require 'net/http'
+require 'uri'
 
 require_relative 'factory'
 require_relative '../util/test_interface'
@@ -33,6 +35,30 @@ module Carp
           halt 500, "#{err.message}\n"
         end
 
+        # dispatch to router
+        if bundle == nil
+          puts "dispatching to router: #{@@router}"
+          uri_string = "#{@@router}/route/#{id}"
+          puts uri_string
+          uri = URI.parse uri_string
+          # response = Net::HTTP.get_response uri
+
+          # uri = URI.parse("http://google.com/")
+          # http = Net::HTTP.new(uri.host, uri.port)
+          # request = Net::HTTP::Get.new(uri.request_uri)
+          # request.basic_auth("username", "password")
+          # response = http.request(request)
+
+          http = Net::HTTP.new uri.host, uri.port
+          request = Net::HTTP::Get.new uri.request_uri, \
+            'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'node'
+          response = http.request request
+
+
+          puts response.inspect
+          bundle = response.body if response.code == 200
+        end
+
         halt 404 if bundle == nil
 
         return bundle
@@ -64,6 +90,13 @@ module Carp
         @@router = params[:router]
         @@ctx_mgr = params[:ctx_mgr]
         @@content_root = params[:content_root]
+
+        puts "\n\n************************************\n"
+        puts "Node running on port #{ctx[:port]}\n"
+        puts "\troot: #{@@content_root}\n"
+        puts "\trouter: #{@@router}\n"
+        puts "************************************\n"
+
         run!
       end
 

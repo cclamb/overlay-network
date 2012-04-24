@@ -25,6 +25,7 @@ module Trout
     def search_children params
       request = params[:request]
       responses = []
+      puts params
 
       @@nodes.each do |node|
         uri_string = "#{node}/content/#{request}"
@@ -38,17 +39,21 @@ module Trout
       return responses
     end
 
-    def process_child_request params
-      puts "Processing child request\n"
+    def process_child_request params, port
+      puts "Processing child request from port: #{port}\n"
 
-      responses = search_children params
+      # Generally need to search other children first,
+      # but not needed now
+      #
+      # responses = search_children params
+      responses = []
 
       if responses.empty? && @@routers != nil
         request = params[:request]
-        # forward to any known routers
         @@routers.each do |router|
-          uri_string = "#{router}/route/#{request}"
+          uri_string = "http://localhost:#{router}/route/#{request}"
           uri = URI.parse uri_string
+          puts "forwarding to #{uri_string}"
           begin
             response = Net::HTTP.get_response uri
             responses.push response if response.code == '200'
@@ -83,10 +88,12 @@ module Trout
 
     get '/route/:request' do
       role = request.env['HTTP_X_OVERLAY_ROLE']
+      puts request.env
       if role == 'router'
         process_router_request params
       else
-        process_child_request params
+        port = request.env['HTTP_X_OVERLAY_PORT']
+        process_child_request params, port
       end
     end
 
@@ -96,6 +103,13 @@ module Trout
         @@context = params[:ctx_mgr]
         @@nodes = params[:nodes]
         @@routers = params[:routers]
+
+        puts "\n\n************************************\n"
+        puts "Router running on port #{ctx[:port]}\n"
+        puts "\tchildren: #{@@nodes}\n"
+        puts "\trouters: #{@@routers}\n"
+        puts "************************************\n"
+
         run!
     end
 
