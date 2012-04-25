@@ -36,7 +36,7 @@ module Carp
         end
 
         # dispatch to router
-        if bundle == nil && pass_to_router
+        if bundle == nil && pass_to_router && @@router != nil
           uri_string = "#{@@router}/route/#{id}"
           puts "[C(#{settings.port})] dispatching to router: #{uri_string}"
           uri = URI.parse uri_string
