@@ -9,7 +9,7 @@ require_relative '../util/test_interface'
 
 module Trout
 
-  class Router < Perch::Util::TestInterface
+  class Router < Util::TestInterface
 
     enable :inline_templates
 

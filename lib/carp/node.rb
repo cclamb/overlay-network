@@ -10,7 +10,7 @@ module Carp
 
   module Core
 
-    class Node < Perch::Util::TestInterface
+    class Node < Util::TestInterface
 
       enable :inline_templates
 

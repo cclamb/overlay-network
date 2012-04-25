@@ -6,11 +6,11 @@ require_relative '../../lib/util/test_interface'
 
 Hostname = Socket::gethostname
 
-describe Perch::Util::TestInterface do
+describe Util::TestInterface do
   include Rack::Test::Methods
 
   def app
-    Perch::Util::TestInterface
+    Util::TestInterface
   end
 
   it 'should return 404 when error 404 called' do

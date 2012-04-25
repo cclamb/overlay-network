@@ -42,6 +42,7 @@ PLATFORMS
 
 DEPENDENCIES
   cucumber
+  json
   nokogiri
   rspec
   sinatra
