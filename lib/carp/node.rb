@@ -23,7 +23,7 @@ module Carp
         @type = 'content node'
       end
 
-      def get_content id
+      def get_content id, pass_to_router = true
         factory = Carp::Core::Factory.new
         sm = factory.create_component :search_manager, \
           :content_root => @@content_root
@@ -36,27 +36,16 @@ module Carp
         end
 
         # dispatch to router
-        if bundle == nil
+        if bundle == nil && pass_to_router
           puts "dispatching to router: #{@@router}"
           uri_string = "#{@@router}/route/#{id}"
           puts uri_string
           uri = URI.parse uri_string
-          # response = Net::HTTP.get_response uri
-
-          # uri = URI.parse("http://google.com/")
-          # http = Net::HTTP.new(uri.host, uri.port)
-          # request = Net::HTTP::Get.new(uri.request_uri)
-          # request.basic_auth("username", "password")
-          # response = http.request(request)
-
           http = Net::HTTP.new uri.host, uri.port
           request = Net::HTTP::Get.new uri.request_uri, \
             'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'node'
           response = http.request request
-
-
-          puts response.inspect
-          bundle = response.body if response.code == 200
+          bundle = response.body if response.code == '200'
         end
 
         halt 404 if bundle == nil
@@ -66,22 +55,32 @@ module Carp
 
       get '/content/:id' do
         id = params[:id]
-        bundle = get_content id
-        @license = bundle[:license]
-        @content = bundle[:content]
+        role = request.env['HTTP_X_OVERLAY_ROLE']
+        bundle = get_content id, role != 'router'
         headers 'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'node'
         content_type :xml
-        erb :content
+        begin
+          @license = bundle[:license]
+          @content = bundle[:content]
+          erb :content
+        rescue
+          return bundle
+        end
       end
 
       get '/test/content/:id' do
         id = params[:id]
-        bundle = get_content id
-        @license = bundle[:license]
-        @content = bundle[:content]
+        role = request.env['HTTP_X_OVERLAY_ROLE']
+        bundle = get_content id, role != 'router'
         headers 'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'node'
         content_type :xml
-        erb :content
+        begin
+          @license = bundle[:license]
+          @content = bundle[:content]
+          erb :content
+        rescue
+          return bundle
+        end
       end
 
       def self.start params

@@ -25,13 +25,17 @@ module Trout
     def search_children params
       request = params[:request]
       responses = []
-      puts params
 
       @@nodes.each do |node|
         uri_string = "#{node}/content/#{request}"
+        puts "Router (#{settings.port}) submitting to node: #{uri_string}\n"
         uri = URI.parse uri_string
         begin
-          response = Net::HTTP.get_response uri
+          # response = Net::HTTP.get_response uri
+          http = Net::HTTP.new uri.host, uri.port
+          request = Net::HTTP::Get.new uri.request_uri, \
+            'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'router'
+          response = http.request request
           responses.push response if response.code == '200'
         rescue
         end
@@ -40,7 +44,7 @@ module Trout
     end
 
     def process_child_request params, port
-      puts "Processing child request from port: #{port}\n"
+      puts "Router (#{settings.port}), child request from port: #{port}\n"
 
       # Generally need to search other children first,
       # but not needed now
@@ -53,9 +57,13 @@ module Trout
         @@routers.each do |router|
           uri_string = "http://localhost:#{router}/route/#{request}"
           uri = URI.parse uri_string
-          puts "forwarding to #{uri_string}"
+          puts "Router (#{settings.port}) forwarding to #{uri_string}"
           begin
-            response = Net::HTTP.get_response uri
+            # response = Net::HTTP.get_response uri
+            http = Net::HTTP.new uri.host, uri.port
+            request = Net::HTTP::Get.new uri.request_uri, \
+              'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'router'
+            response = http.request request
             responses.push response if response.code == '200'
           rescue
           end
@@ -73,7 +81,7 @@ module Trout
     end
 
     def process_router_request params
-      puts "Procesing router request...\n"
+      puts "Router (#{settings.port}) procesing router request...\n"
 
       responses = search_children params
 
@@ -88,7 +96,7 @@ module Trout
 
     get '/route/:request' do
       role = request.env['HTTP_X_OVERLAY_ROLE']
-      puts request.env
+      # puts request.env
       if role == 'router'
         process_router_request params
       else
