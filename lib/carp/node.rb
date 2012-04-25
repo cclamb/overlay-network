@@ -37,9 +37,8 @@ module Carp
 
         # dispatch to router
         if bundle == nil && pass_to_router
-          puts "dispatching to router: #{@@router}"
           uri_string = "#{@@router}/route/#{id}"
-          puts uri_string
+          puts "[C(#{settings.port})] dispatching to router: #{uri_string}"
           uri = URI.parse uri_string
           http = Net::HTTP.new uri.host, uri.port
           request = Net::HTTP::Get.new uri.request_uri, \
@@ -90,7 +89,7 @@ module Carp
         @@ctx_mgr = params[:ctx_mgr]
         @@content_root = params[:content_root]
 
-        puts "\n\n************************************\n"
+        puts "************************************\n"
         puts "Node running on port #{ctx[:port]}\n"
         puts "\troot: #{@@content_root}\n"
         puts "\trouter: #{@@router}\n"

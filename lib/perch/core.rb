@@ -6,7 +6,6 @@ module Core
   Content_Root_Base = "#{File.dirname __FILE__}/../../etc/content-"
 
   def Core::process_child port, router_url, ctx_mgr_url, content_root
-    puts "\t ==>> node up on port #{port}...\n"
     Carp::Core::Node.start :router => router_url, \
       :ctx_mgr => ctx_mgr_url, \
       :content_root => content_root, \
@@ -15,8 +14,6 @@ module Core
   end
 
   def Core::process_router port, nodes, ctx_mgr_url, router_urls
-    puts "\t==>> router up on port #{port}...\n"
-    puts nodes
     Trout::Router.start :nodes => nodes, \
       :ctx_mgr => ctx_mgr_url, \
       :routers => router_urls, \
@@ -39,9 +36,6 @@ module Core
     original_router_ports = router_ports.clone
     nets.each do |number_of_nodes|
 
-      # reserve for router
-      # router_port = port
-      # port += 1
       router_port = router_ports.pop
       raise 'bad port number' if router_port == nil
 
@@ -53,13 +47,11 @@ module Core
 
         content_root = "#{Content_Root_Base}#{net_cnt}"
         net_cnt += 1
-        puts "ROOT => #{content_root} : #{net_cnt}"
 
         pid = fork
         if pid == nil
           process_child port, router_url, nil, content_root
         else
-          puts "In parent! child pid: #{pid}"
           Process.detach pid
           pids.push pid
         end
@@ -77,7 +69,6 @@ module Core
         other_routers.delete router_port
         process_router router_port, nodes, nil, other_routers
       else
-        puts "In parent! child pid: #{pid}"
         Process.detach pid
         pids.push pid
       end
@@ -87,7 +78,6 @@ module Core
   end
 
   def Core::clean pids
-    puts "Killin me childs like da boss!\n"
     pids.each do |pid|
       Process.kill :INT, pid
     end
