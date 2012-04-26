@@ -1,5 +1,6 @@
 require_relative '../carp/node'
 require_relative '../trout/router'
+require_relative '../koi/context_manager'
 
 module Core
 
@@ -22,7 +23,9 @@ module Core
   end
 
   def Core::process_context_manager port
-    Koi::ContextManager.start :ctx => { :port => port, :logging => true }
+    Koi::ContextManager.start \
+      :ctx => { :port => port, :logging => true }
+    exit!
   end
 
   def Core::spawn links, nets, base_port = 4567
@@ -33,7 +36,7 @@ module Core
     port += 1
     pid = fork
     if pid == nil
-      process_context_manager router_port
+      process_context_manager cm_port
     else
       Process.detach pid
       pids.push pid
@@ -64,7 +67,7 @@ module Core
 
         pid = fork
         if pid == nil
-          process_child port, router_url, nil, content_root
+          process_child port, router_url, cm_port, content_root
         else
           Process.detach pid
           pids.push pid
@@ -81,7 +84,7 @@ module Core
       if pid == nil
         other_routers = original_router_ports.clone
         other_routers.delete router_port
-        process_router router_port, nodes, nil, other_routers
+        process_router router_port, nodes, cm_port, other_routers
       else
         Process.detach pid
         pids.push pid
