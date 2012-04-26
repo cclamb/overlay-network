@@ -19,8 +19,12 @@ describe Koi::ContextManager do
   end
 
   it 'should handle post /status' do
-    post '/status'
+    post '/status', {:level => :secret}
     last_response.should be_ok
+    get '/status'
+    last_response.should be_ok
+    status = JSON.parse last_response.body
+    status['level'].should eq 'secret'
   end
 
 end
