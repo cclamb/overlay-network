@@ -22,6 +22,7 @@ module Koi
     end
 
     get '/status' do
+      content_type 'application/json', :charset => 'utf-8'
       JSON.generate @status
     end
 
@@ -30,6 +31,17 @@ module Koi
       return unless validate_level new_level
       @status[:level] = new_level.to_sym
     end
+
+    def self.start params
+        ctx = params[:ctx]
+        set ctx if ctx != nil
+
+        puts "************************************\n"
+        puts "Context Manager running on port #{ctx[:port]}\n"
+        puts "************************************\n"
+
+        run!
+      end
 
   end
 

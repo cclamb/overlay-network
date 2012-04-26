@@ -39,6 +39,7 @@ describe Koi::ContextManager do
     last_response.should be_ok
     status = JSON.parse last_response.body
     status['level'].should eq 'top_secret'
+    last_response.content_type.should eq 'application/json;charset=utf-8'
   end
 
   it 'should handle post /status' do

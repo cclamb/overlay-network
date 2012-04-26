@@ -21,9 +21,23 @@ module Core
     exit!
   end
 
+  def Core::process_context_manager port
+    Koi::ContextManager.start :ctx => { :port => port, :logging => true }
+  end
+
   def Core::spawn links, nets, base_port = 4567
     pids = []
     port = base_port
+
+    cm_port = port
+    port += 1
+    pid = fork
+    if pid == nil
+      process_context_manager router_port
+    else
+      Process.detach pid
+      pids.push pid
+    end
 
     router_ports = []
     for i in 1 .. nets.size
