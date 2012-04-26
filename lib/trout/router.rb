@@ -31,7 +31,6 @@ module Trout
         puts "[R(#{settings.port})] submitting to node: #{uri_string}\n"
         uri = URI.parse uri_string
         begin
-          # response = Net::HTTP.get_response uri
           http = Net::HTTP.new uri.host, uri.port
           request = Net::HTTP::Get.new uri.request_uri, \
             'X-Overlay-Port' => "#{settings.port}", 'X-Overlay-Role' => 'router'
