@@ -16,9 +16,10 @@ module Koi
     end
 
     def validate_level level
-      level == :secret \
-        || level == :top_secret \
-        || level == :unclassified
+      level != nil \
+        && ( level == :secret \
+          || level == :top_secret \
+          || level == :unclassified )
     end
 
     get '/status' do
@@ -27,7 +28,9 @@ module Koi
     end
 
     post '/status' do
-      new_level = params[:level].to_sym
+      new_level = params[:level]
+      return if new_level == nil
+      new_level = new_level.to_sym
       return unless validate_level new_level
       @status[:level] = new_level.to_sym
     end

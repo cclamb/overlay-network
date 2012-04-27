@@ -11,10 +11,10 @@ module Trout
     end
 
     def status?
-      uri = URI.parse url
+      uri = URI.parse @url
       response = Net::HTTP.get_response uri
       response.code == '200' \
-        ? JSON.parse(last_response.body)['level'].to_sym \
+        ? JSON.parse(response.body)['level'].to_sym \
         : :unknown_status
     end
 
