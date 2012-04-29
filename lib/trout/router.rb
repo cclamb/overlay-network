@@ -95,7 +95,12 @@ module Trout
     get '/route/:request' do
       role = request.env['HTTP_X_OVERLAY_ROLE']
       if role == 'router'
-        process_router_request params
+        response = process_router_request params
+        cp = Factory.new.create_component \
+          :context_proxy, :url => @@context
+        puts "RESPONSE: #{response}\n"
+        puts "CONTEXT: #{cp.status?}"
+        response
       else
         port = request.env['HTTP_X_OVERLAY_PORT']
         process_child_request params, port
