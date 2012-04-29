@@ -1,4 +1,3 @@
-<content>
   <license>
     <policy>
 
@@ -26,11 +25,3 @@
   
 <policy>
   </license>
-  <artifact>
-    <test>
-  <operational>This is operational data (e.g. S).</operational>
-  <source>This is source data (e.g. TS).</source>
-  This is unlabeled content (e.g. UC).
-</test>
-  </artifact>
-</content>
