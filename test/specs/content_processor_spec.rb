@@ -25,8 +25,6 @@ describe Util::ContentProcessor do
     xml = File.read CONTENT_FILE
     cp = Util::ContentProcessor.new
     result = cp.split xml
-    # puts "LICENSE: \n #{result[:license]} \n\n  ARTIFACT: \n #{result[:artifact]}\n\n"
-    result[:license].should_not eq nil
     result[:artifact].should_not eq nil
     license_xml = Nokogiri::XML result[:license]
     artifact_xml = Nokogiri::XML result[:artifact]
