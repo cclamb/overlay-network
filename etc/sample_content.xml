@@ -2,30 +2,31 @@
   <license>
     <policy>
 
-  <!-- This is specific to source data in an artifact. -->
-  <entity name="source">
-    <permissions>
-      <activity-restrictions>
-        <restriction property="transmit" function="greater_than">
-          secret
-        </restriction>
-      </activity-restrictions>
-    </permissions>
-  </entity>
+      <!-- This is specific to source data in an artifact. -->
+      <entity name="source">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              secret
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
 
-  <!-- This is specific to operational data in an artifact. -->
-  <entity name="operational">
-    <permissions>
-      <activity-restrictions>
-        <restriction property="transmit" function="greater_than">
-          unclassified
-        </restriction>
-      </activity-restrictions>
-    </permissions>
-  </entity>
-  
-<policy>
+      <!-- This is specific to operational data in an artifact. -->
+      <entity name="operational">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              unclassified
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+      
+    </policy>
   </license>
+
   <artifact>
     <test>
   <operational>This is operational data (e.g. S).</operational>

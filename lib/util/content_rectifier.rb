@@ -30,6 +30,7 @@ module Util
               artifact_doc.search("//*/#{sensitive[:name]}").each do |node|
                 #puts node.to_s
                 node.remove
+                sensitive.remove
               end
             end
 
@@ -38,7 +39,7 @@ module Util
         end
 
       end
-      artifact_doc.to_s
+      {:license => license_doc.to_xml, :artifact => artifact_doc.to_xml}
     end
 
     def get_sensitives doc
@@ -46,7 +47,7 @@ module Util
     end
 
     def evaluate relation, content_level, link_level
-      #puts "#{relation} : #{link_level} : #{content_level}"
+      # puts "#{relation} : #{link_level} : #{content_level}"
       content_level = content_level.to_sym
       link_level = link_level.to_sym
       case relation.to_sym
@@ -56,7 +57,7 @@ module Util
           ordering(content_level) > ordering(link_level)
         when :equal
           ordering(content_level) == ordering(link_level)
-        else raise 'unknown level type'
+        else raise 'unknown function type'
       end
     end
 

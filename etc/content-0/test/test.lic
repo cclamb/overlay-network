@@ -4,8 +4,8 @@
   <entity name="source">
     <permissions>
       <activity-restrictions>
-        <restriction property="transmit" function=">=">
-          top_secret
+        <restriction property="transmit" function="greater_than">
+          secret
         </restriction>
       </activity-restrictions>
     </permissions>
@@ -15,11 +15,11 @@
   <entity name="operational">
     <permissions>
       <activity-restrictions>
-        <restriction property="transmit" function=">=">
-          secret
+        <restriction property="transmit" function="greater_than">
+          unclassified
         </restriction>
       </activity-restrictions>
     </permissions>
   </entity>
   
-<policy>
+</policy>

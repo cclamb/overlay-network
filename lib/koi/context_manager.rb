@@ -12,7 +12,7 @@ module Koi
 
     def initialize
       super
-      @status = { :level => :top_secret }
+      @status = { :level => :secret }
     end
 
     def validate_level level
