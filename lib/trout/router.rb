@@ -112,9 +112,13 @@ module Trout
         filtered_response = cr.rectify \
           content[:license], content[:artifact], link_level
 
-        puts "FILTERED RESPONSE: #{filtered_response}"
+        unified_response = cp.unify filtered_response[:license], \
+          filtered_response[:artifact]
 
-        response
+        puts "FILTERED RESPONSE: #{unified_response}"
+
+        # response
+        unified_response
       else
         port = request.env['HTTP_X_OVERLAY_PORT']
         process_child_request params, port
