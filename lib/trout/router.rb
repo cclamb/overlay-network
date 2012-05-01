@@ -95,13 +95,12 @@ module Trout
     get '/route/:request' do
       role = request.env['HTTP_X_OVERLAY_ROLE']
       if role == 'router'
+
         response = process_router_request params
+
         factory = Factory.new
         cp = factory.create_component \
           :context_proxy, :url => @@context
-
-        puts "RESPONSE: #{response}\n"
-        puts "CONTEXT: #{cp.status?}"
 
         link_level = cp.status?.to_sym
 
@@ -109,15 +108,13 @@ module Trout
         cr = factory.create_component :content_rectifier
 
         content = cp.split response
+        
         filtered_response = cr.rectify \
           content[:license], content[:artifact], link_level
 
         unified_response = cp.unify filtered_response[:license], \
           filtered_response[:artifact]
 
-        puts "FILTERED RESPONSE: #{unified_response}"
-
-        # response
         unified_response
       else
         port = request.env['HTTP_X_OVERLAY_PORT']

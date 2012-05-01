@@ -20,15 +20,12 @@ module Util
         restrictions.each do |restriction|
 
           if restriction[:property] == 'transmit'
-            #puts "R: #{restriction[:function]} #{restriction.content}\n"
-
+ 
             ok_to_xmit = evaluate restriction[:function], \
             level, restriction.content.strip
 
             if !ok_to_xmit
-              #puts "//*/#{sensitive[:name]}"
               artifact_doc.search("//*/#{sensitive[:name]}").each do |node|
-                #puts node.to_s
                 node.remove
                 sensitive.remove
               end
@@ -47,7 +44,6 @@ module Util
     end
 
     def evaluate relation, content_level, link_level
-      # puts "#{relation} : #{link_level} : #{content_level}"
       content_level = content_level.to_sym
       link_level = link_level.to_sym
       case relation.to_sym
