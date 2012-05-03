@@ -4,6 +4,8 @@ This is an overlay network simulator.  To use:
 
     $ git clone https://cclamb@github.com/cclamb/overlay-network.git
     $ cd overlay-network
+    $ bundle install
+    ...
     $ bundle exec bin/overlay -s
 
 When the overlay simlulator boots, you'll see statuses on the various HTTP servers created.  The servers are running in the background, you still have control of your shell.  Sometimes the shell doesn't seem to return, but if you hit enter, the command line will reappear.
