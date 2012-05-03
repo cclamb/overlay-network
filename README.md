@@ -134,6 +134,8 @@ Note the `-d "level=unclassified"` addition to curl above.  This executes an HTT
 
 We can now execute a query against 4571 again:
 
+    $ curl http://localhost:4571/content/test
+
     <?xml version="1.0"?>
     <content>
       <license>
@@ -157,3 +159,52 @@ We can now execute a query against 4571 again:
     </content>
 
 Now we only have unclassified content, and all data related to classified elements within the license has been removed.
+
+Now, let's change the link to top_secret, and run again:
+
+    $ curl -d "level=unclassified" http://localhost:4567/status
+    $ curl http://localhost:4567/status
+    {"level":"top_secret"}
+
+    $ curl http://localhost:4571/content/test
+
+    <?xml version="1.0"?>
+    <content>
+      <license>
+        <policy>
+
+      <!-- This is specific to source data in an artifact. -->
+      <entity name="source">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              secret
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+
+      <!-- This is specific to operational data in an artifact. -->
+      <entity name="operational">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              unclassified
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+      
+    </policy>
+      </license>
+      <artifact>
+        <test>
+      <operational>This is operational data (e.g. S).</operational>
+      <source>This is source data (e.g. TS).</source>
+      This is unlabeled content (e.g. UC).
+    </test>
+      </artifact>
+    </content>
+
+Comparing this to the the original query against the local repository via the first query against the node running on 4570, we see that all the content is returned over the secure link.
+
