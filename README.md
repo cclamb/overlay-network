@@ -18,3 +18,101 @@ This is important - if _bin/.pids_ exists, the overlay script will not fork serv
 
 Next, we'll see how it works.  The overlay starts off with the connecting link at _secret_.  Nodes are on ports 4570 and 4571.  The node on 4570 has local access to the _test_ bundle, which contains content at a variety of sensitivity levels.  This is the primary experimental bundle.  The node on 4571 has local access to the test-1 bundle, which is essentially a control bundle.  Each bundle contains an XML file and a license file.
 
+So, queries to the server on 4570 will _not be controlled as they don't cross a domain boundary_.  Ergo, you can use this as a control element.  Queries for the _test_ bundle to 4571 _will be managed_.
+
+So let's first query 4570 for test:
+
+    $ curl -v http://localhost:4570/content/test
+
+    * About to connect() to localhost port 4570 (#0)
+    *   Trying ::1... Connection refused
+    *   Trying 127.0.0.1... connected
+    > GET /content/test HTTP/1.1
+    > User-Agent: curl/7.22.0 (i686-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+    > Host: localhost:4570
+    > Accept: */*
+    > 
+    < HTTP/1.1 200 OK
+    < X-Frame-Options: sameorigin
+    < X-XSS-Protection: 1; mode=block
+    < Content-Type: application/xml;charset=utf-8
+    < X-Overlay-Port: 4570
+    < X-Overlay-Role: node
+    < Content-Length: 889
+    < Connection: keep-alive
+    < Server: thin 1.3.1 codename Triple Espresso
+    < 
+    <content>
+      <license>
+        <policy>
+
+      <!-- This is specific to source data in an artifact. -->
+      <entity name="source">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              secret
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+
+      <!-- This is specific to operational data in an artifact. -->
+      <entity name="operational">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              unclassified
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+      
+    </policy>
+      </license>
+      <artifact>
+        <test>
+      <operational>This is operational data (e.g. S).</operational>
+      <source>This is source data (e.g. TS).</source>
+      This is unlabeled content (e.g. UC).
+    </test>
+      </artifact>
+    </content>
+
+We're using verbose mode here with `curl` which shows us headers, post data, and response codes.  Here, we have a response showing the policy information (in the _license_ element) and the requested data (in the _artifact_ element).  Note the permissions and restrictions in the license and how that corresponds to material in the artifact section.  This data is unfiltered.
+
+Now let's execute the same query against port 4571, which retreives this content via a montitored cross-domain connection:
+
+    $ curl -v http://localhost:4571/content/test
+
+    <?xml version="1.0"?>
+    <content>
+      <license>
+        <policy>
+
+      <!-- This is specific to source data in an artifact. -->
+      
+
+      <!-- This is specific to operational data in an artifact. -->
+      <entity name="operational">
+        <permissions>
+          <activity-restrictions>
+            <restriction property="transmit" function="greater_than">
+              unclassified
+            </restriction>
+          </activity-restrictions>
+        </permissions>
+      </entity>
+      
+    </policy>
+      </license>
+      <artifact>
+        <test>
+      <operational>This is operational data (e.g. S).</operational>
+      
+      This is unlabeled content (e.g. UC).
+    </test>
+      </artifact>
+    </content>
+
+Note that here I have truncted the status information of the request for brevity's sake.  Here, we have a license segment in the response and an artifact segment.  Notice that the license no longer has and data regarding the source element (except for comments) and the content section also contains no source data.  The connection is running at _secret_ and that information cannot traverse that link, ergo it has been redacted.
