@@ -116,3 +116,8 @@ Now let's execute the same query against port 4571, which retreives this content
     </content>
 
 Note that here I have truncted the status information of the request for brevity's sake.  Here, we have a license segment in the response and an artifact segment.  Notice that the license no longer has and data regarding the source element (except for comments) and the content section also contains no source data.  The connection is running at _secret_ and that information cannot traverse that link, ergo it has been redacted.
+
+Now we will run unclassified on the link.  To do this, let's first check the status by querying the Context Manager.  The Context Manager will return JSON indicating the status:
+
+    $ curl http://localhost:4567/status
+    {"level":"secret"}
