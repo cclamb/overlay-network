@@ -208,3 +208,56 @@ Now, let's change the link to top_secret, and run again:
 
 Comparing this to the the original query against the local repository via the first query against the node running on 4570, we see that all the content is returned over the secure link.
 
+Remember, the _test-1_ bundle is not sensitive and is not controlled:
+
+    $ curl -d "level=unclassified" http://localhost:4567/status
+    $ curl http://localhost:4567/status
+    {"level":"unclassified"}
+
+    $ curl http://localhost:4571/content/test-1<content>
+      <license>
+        This is the license.
+      </license>
+      <artifact>
+        This is the artifact.
+      </artifact>
+    </content>
+
+    $ curl http://localhost:4570/content/test-1
+    <?xml version="1.0"?>
+    <content>
+      <license>
+        This is the license.
+      </license>
+      <artifact>
+        This is the artifact.
+      </artifact>
+    </content>
+
+Here we have queried with the link unclassified to both nodes and received identical responses.
+
+If you request a bundle that doesn't exist in the system at any time, you'll receive a 404 return code:
+
+    $ curl -v http://localhost:4570/content/i-dont-exist
+    
+    * About to connect() to localhost port 4570 (#0)
+    *   Trying ::1... Connection refused
+    *   Trying 127.0.0.1... connected
+    > GET /content/i-dont-exist HTTP/1.1
+    > User-Agent: curl/7.22.0 (i686-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3
+    > Host: localhost:4570
+    > Accept: */*
+    > 
+    < HTTP/1.1 404 Not Found
+    < X-Frame-Options: sameorigin
+    < X-XSS-Protection: 1; mode=block
+    < Content-Type: text/html;charset=utf-8
+    < Content-Length: 0
+    < Connection: keep-alive
+    < Server: thin 1.3.1 codename Triple Espresso
+    < 
+    * Connection #0 to host localhost left intact
+    * Closing connection #0
+
+Note you must use verbose mode so you can see the HTTP code returned.
+
