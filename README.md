@@ -121,3 +121,13 @@ Now we will run unclassified on the link.  To do this, let's first check the sta
 
     $ curl http://localhost:4567/status
     {"level":"secret"}
+
+So we are running at _secret_, as expected.  Let's change that to unclassified:
+
+    $ curl -d "level=unclassified" http://localhost:4567/status
+    $ curl http://localhost:4567/status
+    {"level":"unclassified"}
+
+Note the `-d "level=unclassified"` addition to curl above.  This executes an HTTP POST with the data tuple (level, unclassified).
+
+
