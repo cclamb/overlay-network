@@ -239,7 +239,7 @@ Here we have queried with the link unclassified to both nodes and received ident
 If you request a bundle that doesn't exist in the system at any time, you'll receive a 404 return code:
 
     $ curl -v http://localhost:4570/content/i-dont-exist
-    
+
     * About to connect() to localhost port 4570 (#0)
     *   Trying ::1... Connection refused
     *   Trying 127.0.0.1... connected
@@ -261,3 +261,20 @@ If you request a bundle that doesn't exist in the system at any time, you'll rec
 
 Note you must use verbose mode so you can see the HTTP code returned.
 
+That's it! Now shutdown the network, which kills the nodes, routers, and context manager servers and removes the _bin/.pids_ file:
+
+    $ bundle exec bin/overlay -t
+
+You'll see data returned showing what is terminated, and you're finished.
+
+# Tracing Requests
+
+Information is sent to _stdout_ in the terminal you start the overlay simulator.  It looks something like this, typically:
+
+    [C(4571)] dispatching to router: http://localhost:4568/route/test
+    [R(4568)] child request from port: 4571
+    [R(4568)] forwarding to http://localhost:4569/route/test
+    [R(4569)] processing router request...
+    [R(4569)] submitting to node: http://localhost:4570/content/test
+
+The first part of the trace string contains the type of node and the ID of the node (i.e. the port on which the node runs).  It then also adds some information on what that node is doing with a request.  Here, we see the client node on 4571 dispatching a request to a router on 4568 which then dispatches to another router on 4569.  The router on 4569 finally dispatches to a node on 4570.
