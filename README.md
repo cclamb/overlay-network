@@ -122,6 +122,8 @@ Now we will run unclassified on the link.  To do this, let's first check the sta
     $ curl http://localhost:4567/status
     {"level":"secret"}
 
+(Note I've dropped the `-v` option from _curl_, so I'm no longer running in verbose mode, so I no longer have HTTP status information, header information, or POST data displayed.)
+
 So we are running at _secret_, as expected.  Let's change that to unclassified:
 
     $ curl -d "level=unclassified" http://localhost:4567/status
@@ -130,4 +132,28 @@ So we are running at _secret_, as expected.  Let's change that to unclassified:
 
 Note the `-d "level=unclassified"` addition to curl above.  This executes an HTTP POST with the data tuple (level, unclassified).
 
+We can now execute a query against 4571 again:
 
+    <?xml version="1.0"?>
+    <content>
+      <license>
+        <policy>
+
+      <!-- This is specific to source data in an artifact. -->
+      
+
+      <!-- This is specific to operational data in an artifact. -->
+      
+      
+    </policy>
+      </license>
+      <artifact>
+        <test>
+      
+      
+      This is unlabeled content (e.g. UC).
+    </test>
+      </artifact>
+    </content>
+
+Now we only have unclassified content, and all data related to classified elements within the license has been removed.
