@@ -8,6 +8,8 @@ This is an overlay network simulator.  To use:
     ...
     $ bundle exec bin/overlay -s
 
+(You can skip the bundle install step if you've alread run it.)
+
 When the overlay simlulator boots, you'll see statuses on the various HTTP servers created.  The servers are running in the background, you still have control of your shell.  Sometimes the shell doesn't seem to return, but if you hit enter, the command line will reappear.
 
 When started, you have started five separate processes all running HTTP servers on a variety of different ports.  These servers are running independendly and are not controlled by the forking process.  A couple of things happen:
@@ -164,7 +166,7 @@ Now we only have unclassified content, and all data related to classified elemen
 
 Now, let's change the link to top_secret, and run again:
 
-    $ curl -d "level=unclassified" http://localhost:4567/status
+    $ curl -d "level=top_secret" http://localhost:4567/status
     $ curl http://localhost:4567/status
     {"level":"top_secret"}
 
