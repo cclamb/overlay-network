@@ -36,6 +36,7 @@ module Core
     port += 1
     pid = fork
     if pid == nil
+      Process::daemon true, false
       process_context_manager cm_port
     else
       Process.detach pid
@@ -67,6 +68,7 @@ module Core
 
         pid = fork
         if pid == nil
+          Process::daemon true, false
           process_child port, \
             router_url, \
             "http://localhost:#{cm_port}/status", \
